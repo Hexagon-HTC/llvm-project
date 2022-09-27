@@ -664,14 +664,22 @@ macro(add_llvm_library name)
 
       if(${name} IN_LIST LLVM_DISTRIBUTION_COMPONENTS OR
           NOT LLVM_DISTRIBUTION_COMPONENTS)
-        set(export_to_llvmexports EXPORT LLVMExports)
+          set(export_to_llvmexports_release EXPORT LLVMExports_release)
+          set(export_to_llvmexports_debug EXPORT LLVMExports_debug)
         set_property(GLOBAL PROPERTY LLVM_HAS_EXPORTS True)
       endif()
 
       install(TARGETS ${name}
-              ${export_to_llvmexports}
-              ${install_type} DESTINATION ${install_dir}
-              COMPONENT ${name})
+                ${export_to_llvmexports_debug}
+                ${install_type} DESTINATION ${install_dir}/Debug
+                COMPONENT ${name}
+                CONFIGURATIONS Debug)
+      
+      install(TARGETS ${name}
+                ${export_to_llvmexports_release}
+                ${install_type} DESTINATION ${install_dir}/Release
+                COMPONENT ${name}
+                CONFIGURATIONS Release)
 
       if (NOT LLVM_ENABLE_IDE)
         add_llvm_install_targets(install-${name}
@@ -950,6 +958,8 @@ macro(add_llvm_target target_name)
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR})
   add_llvm_library(LLVM${target_name} ${ARGN})
+  target_include_directories(LLVM${target_name} INTERFACE
+      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
   set( CURRENT_LLVM_TARGET LLVM${target_name} )
 endmacro(add_llvm_target)
 

@@ -166,12 +166,19 @@ macro(add_tablegen target project)
   if (${project} STREQUAL LLVM AND NOT LLVM_INSTALL_TOOLCHAIN_ONLY)
     if(${target} IN_LIST LLVM_DISTRIBUTION_COMPONENTS OR
         NOT LLVM_DISTRIBUTION_COMPONENTS)
-      set(export_to_llvmexports EXPORT LLVMExports)
+      set(export_to_llvmexports_release EXPORT LLVMExports_release)
+      set(export_to_llvmexports_debug EXPORT LLVMExports_debug)
     endif()
 
     install(TARGETS ${target}
-            ${export_to_llvmexports}
-            RUNTIME DESTINATION ${LLVM_TOOLS_INSTALL_DIR})
+                ${export_to_llvmexports_debug}
+                RUNTIME DESTINATION ${LLVM_TOOLS_INSTALL_DIR}/Debug
+                CONFIGURATIONS Debug)
+    
+    install(TARGETS ${target}
+                ${export_to_llvmexports_release}
+                RUNTIME DESTINATION ${LLVM_TOOLS_INSTALL_DIR}/Release
+                CONFIGURATIONS Release)
   endif()
   set_property(GLOBAL APPEND PROPERTY LLVM_EXPORTS ${target})
 endmacro()
