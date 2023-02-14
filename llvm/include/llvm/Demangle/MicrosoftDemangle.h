@@ -16,6 +16,7 @@
 #include "llvm/Demangle/Utility.h"
 
 #include <utility>
+#include <cstdint>
 
 namespace llvm {
 namespace ms_demangle {
